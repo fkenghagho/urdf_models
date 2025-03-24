@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="pump_mockup">
+  <xacro:macro name="pump_mockup" params="robot_name">
+
+    <!-- Base -->
+    <link name="${robot_name}"/>
+
+    <link name="${robot_name}_body_1_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://tracebot_description/meshes/components/pump_mockup/pump_mockup_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey">
+          <color rgba="0.6 0.6 0.6 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+    <link name="${robot_name}_body_2_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://tracebot_description/meshes/components/pump_mockup/pump_mockup_2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey">
+          <color rgba="0.6 0.6 0.6 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+    <link name="${robot_name}_body_3_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://tracebot_description/meshes/components/pump_mockup/pump_mockup_3.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey">
+          <color rgba="0.6 0.6 0.6 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+    <link name="${robot_name}_canister_tray_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://tracebot_description/meshes/components/pump_mockup/canister_tray.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey">
+          <color rgba="0.6 0.6 0.6 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="${robot_name}_body_1_link_joint" type="fixed">
+      <origin xyz="0 0.145 0" rpy="0 0 0"/>
+      <parent link="${robot_name}"/>
+      <child link="${robot_name}_body_1_link"/>
+    </joint>
+
+    <joint name="${robot_name}_body_2_link_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${robot_name}_body_1_link"/>
+      <child link="${robot_name}_body_2_link"/>
+    </joint>
+
+    <joint name="${robot_name}_body_3_link_joint" type="fixed">
+      <origin xyz="0 0.273 0" rpy="0 0 3.1415"/>
+      <parent link="${robot_name}_body_2_link"/>
+      <child link="${robot_name}_body_3_link"/>
+    </joint>
+
+    <joint name="${robot_name}_canister_tray_link_joint" type="fixed">
+      <parent link="${robot_name}_body_2_link"/>
+      <child link="${robot_name}_canister_tray_link"/>
+      <origin xyz="0.12828 0.11081 0" rpy="0 0 -2.3562"/>
+    </joint>
+
+  </xacro:macro>
+</robot>

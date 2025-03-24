@@ -1,0 +1,327 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="tracebot_finger">
+
+	<xacro:macro name="tracebot_finger" params="finger_number prefix palm_rotation">
+
+        <link
+            name="${prefix}actuator_block_${finger_number}">
+            <inertial>
+            <origin
+                xyz="0.0 0 0.0"
+                rpy="0 0 0" />
+            <mass
+                value="1.79916925261136" />
+            <inertia
+                ixx="0.00540821636420224"
+                ixy="6.89402453887378E-05"
+                ixz="-8.24746243530809E-05"
+                iyy="0.00671347091588812"
+                iyz="-2.2389560786701E-05"
+                izz="0.00171753893954051" />
+            </inertial>
+            <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/actuator_block.dae" />
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.890196078431372 0.890196078431372 0.913725490196078 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/actuator_block.dae" />
+            </geometry>
+            </collision>
+        </link>
+
+        <xacro:if value="${palm_rotation}">
+        <!-- Palm rotation is enabled on this finger -->
+            <link
+                name="${prefix}palm_rotation_support_${finger_number}">
+                <inertial>
+                <origin
+                    xyz="0.0 0 0.0"
+                    rpy="0 0 0" />
+                <mass
+                    value="0.02369" />
+                <inertia
+                    ixx="1.0919E-06"
+                    ixy="9.0955E-09"
+                    ixz="-7.2263E-07"
+                    iyy="5.5428E-06"
+                    iyz="1.4767E-09"
+                    izz="5.797E-06" />
+                </inertial>
+                <visual>
+                <origin
+                    xyz="0 0 0"
+                    rpy="0 0 0" />
+                <geometry>
+                    <mesh
+                    filename="package://tracebot_gripper_description/meshes/palm_rotation_support.dae" />
+                </geometry>
+                <material
+                    name="">
+                    <color
+                    rgba="0.8902 0.8902 0.91373 1" />
+                </material>
+                </visual>
+                <collision>
+                <origin
+                    xyz="0 0 0"
+                    rpy="0 0 0" />
+                <geometry>
+                    <mesh
+                    filename="package://tracebot_gripper_description/meshes/palm_rotation_support.dae" />
+                </geometry>
+                </collision>
+            </link>
+            <joint
+                name="${prefix}joint_self_rotation_${finger_number}"
+                type="revolute">
+                <origin
+                xyz="0.045 0 0"
+                rpy="0 0 0" />
+                <parent
+                link="${prefix}palm_rotation_support_${finger_number}" />
+                <child
+                link="${prefix}actuator_block_${finger_number}" />
+                <axis
+                xyz="0 0 1" />
+                <limit
+                lower="-1.0471975511965976"
+                upper="1.0471975511965976"
+                effort="0"
+                velocity="0" />
+            </joint>
+
+        </xacro:if>
+        <xacro:unless value="${palm_rotation}"> 
+        <!-- Palm rotation is not enabled on this finger (actuator block is directly fixed on the palm) -->
+            
+
+        </xacro:unless>
+
+        <link
+            name="${prefix}proximal_phalanx_${finger_number}">
+            <inertial>
+            <origin
+                xyz="0.0 -0.0 0.0"
+                rpy="0 0 0" />
+            <mass
+                value="0.13646" />
+            <inertia
+                ixx="2.0843E-05"
+                ixy="1.8403E-06"
+                ixz="-3.0382E-06"
+                iyy="5.4507E-05"
+                iyz="-2.512E-07"
+                izz="4.7549E-05" />
+            </inertial>
+            <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/proximal_phalanx.dae" />
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.8902 0.8902 0.91373 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/proximal_phalanx.dae" />
+            </geometry>
+            </collision>
+        </link>
+        <joint
+            name="${prefix}joint_proximal_${finger_number}"
+            type="revolute">
+            <origin
+            xyz="0.005 0.00 0.0"
+            rpy="1.5707963267948966 -0.7853981633974483 0" />
+            <parent
+            link="${prefix}actuator_block_${finger_number}" />
+            <child
+            link="${prefix}proximal_phalanx_${finger_number}" />
+            <axis
+            xyz="0 0 1" />
+            <limit
+            lower="0"
+            upper="1.5708"
+            effort="0"
+            velocity="0" />
+        </joint>
+
+        <!-- tactile sensor frame -->
+        <link name="${prefix}proximal_sensor_${finger_number}"/>
+		<joint name="${prefix}joint_proximal_sensor_${finger_number}" type="fixed">
+            <origin
+            xyz="0.04451 -0.00654 -0.0165"
+            rpy="1.5707963267948966 -1.5707963267948966 0.0" />
+			<parent link="${prefix}proximal_phalanx_${finger_number}"/>
+			<child link="${prefix}proximal_sensor_${finger_number}"/>
+		</joint>
+
+
+        <link
+            name="${prefix}intermediate_phalanx_${finger_number}">
+            <inertial>
+            <!-- xyz="0.018585 -0.0017175 0.0053274" -->
+            <origin
+                xyz="0.0 0.0 0.0"
+                rpy="0 0 0" />
+            <mass
+                value="0.10161" />
+            <inertia
+                ixx="1.4312E-05"
+                ixy="4.0715E-07"
+                ixz="-4.8426E-07"
+                iyy="2.7118E-05"
+                iyz="-2.8508E-07"
+                izz="2.2086E-05" />
+            </inertial>
+            <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/intermediate_phalanx.dae" />
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.8902 0.8902 0.91373 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/intermediate_phalanx.dae" />
+            </geometry>
+            </collision>
+        </link>
+        <joint
+            name="${prefix}joint_intermediate_${finger_number}"
+            type="revolute">
+            <origin
+            xyz="0.062 0 0"
+            rpy="0 0 0" />
+            <parent
+            link="${prefix}proximal_phalanx_${finger_number}" />
+            <child
+            link="${prefix}intermediate_phalanx_${finger_number}" />
+            <axis
+            xyz="0 0 1" />
+            <limit
+            lower="0"
+            upper="1.5708"
+            effort="0"
+            velocity="0" />
+        </joint>
+
+        <!-- tactile sensor frame -->
+        <link name="${prefix}intermediate_sensor_${finger_number}"/>
+		<joint name="${prefix}joint_intermediate_sensor_${finger_number}" type="fixed">
+            <origin
+            xyz="0.02678 -0.00654 -0.0165"
+            rpy="1.5707963267948966 -1.5707963267948966 0.0" />
+			<parent link="${prefix}intermediate_phalanx_${finger_number}"/>
+			<child link="${prefix}intermediate_sensor_${finger_number}"/>
+		</joint>
+
+        <link
+            name="${prefix}distal_phalanx_${finger_number}">
+            <inertial>
+            <!-- xyz="0.017012 0 0" -->
+            <origin
+                xyz="0.0 0 0"
+                rpy="0 0 0" />
+            <mass
+                value="0.04523" />
+            <inertia
+                ixx="4.2925E-06"
+                ixy="1.5962E-08"
+                ixz="-1.804E-07"
+                iyy="6.9061E-06"
+                iyz="-5.0164E-08"
+                izz="6.0779E-06" />
+            </inertial>
+            <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/distal_phalanx.dae" />
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.8902 0.8902 0.91373 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/distal_phalanx.dae" />
+            </geometry>
+            </collision>
+        </link>
+        <joint
+            name="${prefix}joint_distal_${finger_number}"
+            type="revolute">
+            <origin
+            xyz="0.037 0 0"
+            rpy="0 0 0" />
+            <parent
+            link="${prefix}intermediate_phalanx_${finger_number}" />
+            <child
+            link="${prefix}distal_phalanx_${finger_number}" />
+            <axis
+            xyz="0 0 1" />
+            <limit
+            lower="-0.7854"
+            upper="1.0472"
+            effort="0"
+            velocity="0" />
+        </joint>
+
+        <!-- tactile sensor frame -->
+        <link name="${prefix}distal_sensor_${finger_number}"/>
+		<joint name="${prefix}joint_distal_sensor_${finger_number}" type="fixed">
+            <origin
+            xyz="0.0276 -0.001 -0.0135"
+            rpy="1.5707963267948966 -1.5707963267948966 0.0" />
+			<parent link="${prefix}distal_phalanx_${finger_number}"/>
+			<child link="${prefix}distal_sensor_${finger_number}"/>
+		</joint>
+
+	</xacro:macro>
+
+</robot>

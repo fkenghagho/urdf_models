@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="robot_setup" default="astech"/>
+  <arg name="simulation" default="false"/>
+
+  <group if="$(arg simulation)">
+    <!--Load robot model-->
+    <include file="$(find tracebot_description)/launch/load_tracebot_description.launch">
+        <arg name="robot_setup" value="$(arg robot_setup)"/>
+    </include>
+
+    <!--Load robot in Rviz-->
+    <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  </group>
+
+  <!--Launch Rviz-->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tracebot_description)/config/tracebot.rviz"/>
+</launch>

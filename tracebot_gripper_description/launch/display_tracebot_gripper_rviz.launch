@@ -1,0 +1,34 @@
+<launch>
+  <arg
+    name="model" />
+
+  <param name="robot_description" command="$(find xacro)/xacro $(find tracebot_gripper_description)/urdf/tracebot_gripper.xacro"/>
+  <arg name="fake_joints_state" default="False" />
+
+  <group if="$(arg fake_joints_state)">
+  <!-- stuff that will only be evaluated if path_planned is true -->
+    <node
+      name="joint_state_publisher_gui"
+      pkg="joint_state_publisher_gui"
+      type="joint_state_publisher_gui" />
+    <!--output="screen"-->
+  </group>
+
+  <group unless="$(arg fake_joints_state)">
+  <!-- stuff that will only be evaluated if path_planned is true -->
+    <include file="$(find gripper_joints_state_publisher)/launch/joints_state_publisher.launch"/>
+  </group>
+
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher" >
+  </node>
+
+  <node
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    args="-d $(find tracebot_gripper_description)/config/tracebot_gripper.rviz" 
+  />
+</launch>

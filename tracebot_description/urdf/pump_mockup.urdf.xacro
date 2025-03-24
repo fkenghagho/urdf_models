@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="pump_mockup">
+
+  <xacro:include filename="$(find tracebot_description)/urdf/pump_mockup_macro.urdf.xacro"/>
+  <xacro:pump_mockup robot_name="pump_mockup"/>
+</robot>

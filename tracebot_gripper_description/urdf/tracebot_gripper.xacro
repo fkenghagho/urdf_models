@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+
+<robot name="tracebot_gripper" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_macro.xacro"/>
+    <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_UR_cable_support_1.xacro"/>
+    <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_UR_cable_support_2.xacro"/>
+    <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_driver_box.xacro"/>
+
+
+    <link name="base"/>
+  
+    <xacro:tracebot_gripper
+                     parent="base" prefix="">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:tracebot_gripper>
+
+
+     <xacro:tracebot_UR_cable_support_1
+                    parent="base"
+                    prefix="">
+        <origin xyz="0.9 0 0" rpy="-1.57079632679 0 0" />
+    </xacro:tracebot_UR_cable_support_1>
+
+     <xacro:tracebot_UR_cable_support_2
+                    parent="base"
+                    prefix="">
+        <origin xyz="1.1 0 0" rpy="-1.57079632679 0 0" />
+    </xacro:tracebot_UR_cable_support_2>
+
+    <xacro:tracebot_driver_box
+                    parent="base"
+                    prefix="">
+        <origin xyz="0.6 -0.2 0.1" rpy=" -1.57079632679 0 0" />
+    </xacro:tracebot_driver_box>
+
+</robot>

@@ -1,0 +1,28 @@
+-
+  arm_mount_base_frame: tracebot_arm_mount_base
+  arm_mount_frame: tracebot_right_arm_mount
+  arm_base_link: tracebot_right_arm_base_link
+  camera_frame: tracebot_camera_color_optical_frame
+  side: right
+  # robot_T_cam
+  transform:
+    x: 0.305148
+    y: 0.643439
+    z: 0.141301
+    roll: -2.6837446
+    pitch: -1.0633684
+    yaw: -1.5610329
+-
+  arm_mount_base_frame: tracebot_arm_mount_base
+  arm_mount_frame: tracebot_left_arm_mount
+  arm_base_link: tracebot_left_arm_base_link
+  camera_frame: tracebot_camera_color_optical_frame
+  side: left
+  # robot_T_cam
+  transform:
+    x: -0.359598
+    y: 0.318441
+    z: -0.00977268
+    roll: -1.986646
+    pitch: 1.0000922
+    yaw: 1.637781

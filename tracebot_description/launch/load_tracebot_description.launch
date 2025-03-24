@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="robot_setup" default="astech"/>
+
+  <arg name="robot_configuration" value="$(find tracebot_description)/config/$(arg robot_setup)/config.yaml"/>
+
+  <!--Load parameters into robot-->
+  <param name="robot_description" command="$(find xacro)/xacro $(find tracebot_description)/urdf/tracebot.urdf.xacro params_path:=$(arg robot_configuration)"/>
+</launch>

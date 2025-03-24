@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<robot name="tracebot_gripper" xmlns:xacro="http://ros.org/wiki/xacro">
+	
+	<xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_finger_macro.xacro"/>
+	
+	<xacro:macro name="tracebot_gripper" params="parent prefix *origin" >
+
+        <!-- base -->
+        <link name="${prefix}base_link"/>
+		<joint name="${parent}_${prefix}base_joint" type="fixed">
+            <xacro:insert_block name="origin"/>
+			<parent link="${parent}"/>
+			<child link="${prefix}base_link"/>
+		</joint>
+
+        <joint name="${prefix}joint_base_to_palm" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="${prefix}base_link"/>
+        <child link="${prefix}palm"/>
+        </joint>  
+        
+        <link
+            name="${prefix}palm">
+            <inertial>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <mass
+                value="0.60176511887067" />
+            <inertia
+                ixx="0.00195145539253653"
+                ixy="-1.27068899927339E-14"
+                ixz="-1.5095211104232E-18"
+                iyy="0.00193877222621468"
+                iyz="8.22630126050475E-19"
+                izz="0.000234436724212979" />
+            </inertial>
+            <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/palm.dae" />
+            </geometry>
+            <material
+                name="">
+                <color
+                rgba="0.890196078431372 0.890196078431372 0.913725490196078 1" />
+            </material>
+            </visual>
+            <collision>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh
+                filename="package://tracebot_gripper_description/meshes/palm.dae" />
+            </geometry>
+            </collision>
+        </link>
+
+        <xacro:tracebot_finger finger_number="1" prefix="${prefix}"  palm_rotation="true" />
+        <xacro:tracebot_finger finger_number="2" prefix="${prefix}"  palm_rotation="false" />
+        <xacro:tracebot_finger finger_number="3" prefix="${prefix}"  palm_rotation="true" />
+        <xacro:tracebot_finger finger_number="4" prefix="${prefix}"  palm_rotation="false" />
+        
+        <joint
+            name="${prefix}joint_palm_rotation_1"
+            type="revolute">
+            <origin
+            xyz="0 0 0.21925"
+            rpy="0 0 0" />
+            <parent
+            link="${prefix}palm" />
+            <child
+            link="${prefix}palm_rotation_support_1" />
+            <axis
+            xyz="0 0 1" />
+            <limit
+            lower="-0.7853981633974483"
+            upper="0.7853981633974483"
+            effort="0"
+            velocity="0" />
+        </joint>
+
+        <joint
+            name="${prefix}joint_self_rotation_2"
+            type="revolute">
+            <origin
+            xyz="0 0.045 0.21925"
+            rpy="0 0 1.5707963267948966" />
+            <parent
+            link="${prefix}palm" />
+            <child
+            link="${prefix}actuator_block_2" />
+            <axis
+            xyz="0 0 1" />
+            <limit
+            lower="-1.0471975511965976"
+            upper="1.0471975511965976"
+            effort="0"
+            velocity="0" />
+        </joint>
+
+        <joint
+            name="${prefix}joint_palm_rotation_3"
+            type="revolute">
+            <origin
+            xyz="0 0 0.21925"
+            rpy="0 0 3.141592653589793" />
+            <parent
+            link="${prefix}palm" />
+            <child
+            link="${prefix}palm_rotation_support_3" />
+            <axis
+            xyz="0 0 1" />
+            <limit
+            lower="-0.7853981633974483"
+            upper="0.7853981633974483"
+            effort="0"
+            velocity="0" />
+        </joint>
+
+        <joint
+            name="${prefix}joint_self_rotation_4"
+            type="revolute">
+            <origin
+            xyz="0 -0.045 0.21925"
+            rpy="0 0 -1.5707963267948966" />
+            <parent
+            link="${prefix}palm" />
+            <child
+            link="${prefix}actuator_block_4" />
+            <axis
+            xyz="0 0 1" />
+            <limit
+            lower="-1.0471975511965976"
+            upper="1.0471975511965976"
+            effort="0"
+            velocity="0" />
+        </joint>
+
+    </xacro:macro>
+
+</robot>
+
+
+

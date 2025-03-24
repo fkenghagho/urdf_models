@@ -1,0 +1,450 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <xacro:include filename="$(find tracebot_description)/urdf/pump.urdf.xacro"/>
+  <xacro:include filename="$(find tracebot_description)/urdf/pump_mockup_macro.urdf.xacro"/>
+
+  <!--Size of base-->
+  <xacro:property name="base_x" value = "0.900131"/>
+  <xacro:property name="base_y" value = "1.206"/>
+  <xacro:property name="base_z" value = "2.2813"/>
+
+  <!--Position of arms from center of base-->
+  <xacro:property name="arm_x" value = "0.15811"/>
+  <xacro:property name="arm_y" value = "0.15128"/>
+  <xacro:property name="arm_z" value = "0.07490"/>
+
+  <!--Camera mount position (at 0 height)-->
+  <xacro:property name="base_center_to_camera_slide_y" value = "${0.378285-0.008}"/> <!--0.008 Added packing due to sizing issue on physical build-->
+  <xacro:property name="base_center_to_camera_slide_z" value = "${base_z/2 + 0.19845}"/>
+
+  <xacro:property name="camera_base_center_to_joint" value = "0.048"/>
+  <xacro:property name="camera_pivot_center_to_joint" value = "0.02"/>
+
+  <xacro:property name="camera_screw_to_back_place_y" value = "0.057149"/>
+  <xacro:property name="camera_screw_to_back_place_z" value = "0.0125"/>
+
+  <!--Table size and position-->
+  <xacro:property name="default_table_height" value = "1.08216"/>
+  <xacro:property name="default_table_width" value = "1.50001"/>
+  <xacro:property name="default_table_depth" value = "1.59771 "/>
+  <xacro:property name="table_surface_height" value = "0.509922"/>
+
+  <xacro:property name="base_table_offset_y" value= "1.20343"/>
+  <xacro:property name="base_table_offset_z" value= "-0.000901"/>
+
+  <xacro:property name="pump_height" value="0.5579"/>
+
+  <xacro:macro name="tracebot" params="robot_name
+                                       camera_tilt:=0
+                                       camera_mount_offset_z
+                                       pump_enable:=true
+                                       pump_mockup_enable:=false
+                                       pump_show_holder:=true
+                                       pump_pos_x
+                                       pump_pos_y
+                                       pump_pos_z
+                                       pump_rot_r
+                                       pump_rot_p
+                                       pump_rot_y
+                                       left_arm:=true
+                                       right_arm:=true
+                                       robotiq_grippers:=false
+                                       tracebot_grippers:=true
+                                       left_tracebot_gripper_right_robotiq_grippers:=false
+                                       right_tracebot_gripper_left_robotiq_grippers:=false
+                                       load_scene
+                                       load_estimated_scene
+                                       estimated_table_tx
+                                       estimated_table_ty
+                                       estimated_table_tz
+                                       estimated_table_rr
+                                       estimated_table_rp
+                                       estimated_table_ry
+                                       table_width:=${default_table_width}
+                                       table_depth:=${default_table_depth}
+                                       table_height:=${default_table_height}
+                                       show_model:=true
+                                       left_arm_mount_tx:= ${-arm_x}
+                                       left_arm_mount_ty:= ${arm_y}
+                                       left_arm_mount_tz:= ${base_z/2+arm_z}
+                                       left_arm_mount_rr:= ${pi/3}
+                                       left_arm_mount_rp:= 0
+                                       left_arm_mount_ry:= ${-pi/2}
+                                       left_arm_ft_sensor_tx:=0
+                                       left_arm_ft_sensor_ty:=0
+                                       left_arm_ft_sensor_tz:=0
+                                       left_arm_ft_sensor_rr:=0
+                                       left_arm_ft_sensor_rp:=0
+                                       left_arm_ft_sensor_ry:=0
+                                       left_arm_tcp_tx:=0
+                                       left_arm_tcp_ty:=0
+                                       left_arm_tcp_tz:=0.15
+                                       left_arm_tcp_rr:=0
+                                       left_arm_tcp_rp:=0
+                                       left_arm_tcp_ry:=0
+                                       left_arm_joint_limits_parameters_file:='$(find ur_description)/config/ur10e/joint_limits.yaml'
+                                       left_arm_kinematics_parameters_file:='$(find ur_description)/config/ur10e/default_kinematics.yaml'
+                                       left_arm_physical_parameters_file:='$(find ur_description)/config/ur10e/physical_parameters.yaml'
+                                       left_arm_visual_parameters_file:='$(find ur_description)/config/ur10e/visual_parameters.yaml'
+                                       right_arm_mount_tx:= ${arm_x}
+                                       right_arm_mount_ty:= ${arm_y}
+                                       right_arm_mount_tz:= ${base_z/2+arm_z}
+                                       right_arm_mount_rr:= ${pi/3}
+                                       right_arm_mount_rp:= 0
+                                       right_arm_mount_ry:= ${pi/2}
+                                       right_arm_ft_sensor_tx:=0
+                                       right_arm_ft_sensor_ty:=0
+                                       right_arm_ft_sensor_tz:=0
+                                       right_arm_ft_sensor_rr:=0
+                                       right_arm_ft_sensor_rp:=0
+                                       right_arm_ft_sensor_ry:=0
+                                       right_arm_tcp_tx:=0
+                                       right_arm_tcp_ty:=0
+                                       right_arm_tcp_tz:=0.15
+                                       right_arm_tcp_rr:=0
+                                       right_arm_tcp_rp:=0
+                                       right_arm_tcp_ry:=0
+                                       right_arm_joint_limits_parameters_file:='$(find ur_description)/config/ur10e/joint_limits.yaml'
+                                       right_arm_kinematics_parameters_file:='$(find ur_description)/config/ur10e/default_kinematics.yaml'
+                                       right_arm_physical_parameters_file:='$(find ur_description)/config/ur10e/physical_parameters.yaml'
+                                       right_arm_visual_parameters_file:='$(find ur_description)/config/ur10e/visual_parameters.yaml'
+                                       ">
+    <!-- Base -->
+    <link name="${robot_name}_base_link"/>
+
+    <joint name="${robot_name}_mount_base_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${robot_name}_base_link"/>
+      <child link="${robot_name}_arm_mount_base"/>
+    </joint>
+
+    <link name="${robot_name}_arm_mount_base">
+      <visual>
+        <xacro:if value="${show_model}">
+          <origin xyz="0 0 ${base_z/2}" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://tracebot_description/meshes/robot/arm_mount.dae" />
+          </geometry>
+        </xacro:if>
+        <xacro:unless value="${show_model}">
+          <origin xyz="0 ${left_arm_mount_ty} ${right_arm_mount_tz/2}" rpy="0 0 0"/>
+          <geometry>
+            <box size="${right_arm_mount_tx*2} 0.18524 ${right_arm_mount_tz}" />
+          </geometry>
+        </xacro:unless>
+      </visual>
+      <xacro:if value="${show_model}">
+        <collision>
+          <origin xyz="0 0 ${base_z/2}" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://tracebot_description/meshes/robot/arm_mount_collision.dae" />
+          </geometry>
+        </collision>
+      </xacro:if>
+    </link>
+
+    <!-- Arm Setup -->
+    <xacro:include filename="$(find ur_description)/urdf/inc/ur_macro.xacro"/>
+    <xacro:if value="${robotiq_grippers}">
+      <xacro:include filename="$(find robotiq_2f_model)/model/robotiq_2f_85.urdf.xacro" />
+    </xacro:if>
+    <xacro:if value="${tracebot_grippers}">
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_macro.xacro"/>
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_driver_box.xacro"/>
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_UR_cable_support_1.xacro"/>
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_UR_cable_support_2.xacro"/>
+    </xacro:if>
+    <xacro:if value="${left_tracebot_gripper_right_robotiq_grippers}">
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_macro.xacro"/>
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_driver_box.xacro"/>
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_UR_cable_support_1.xacro"/>
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_UR_cable_support_2.xacro"/>
+      <xacro:include filename="$(find robotiq_2f_model)/model/robotiq_2f_85.urdf.xacro" />
+    </xacro:if>
+    <xacro:if value="${right_tracebot_gripper_left_robotiq_grippers}">
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_macro.xacro"/>
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_driver_box.xacro"/>
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_UR_cable_support_1.xacro"/>
+      <xacro:include filename="$(find tracebot_gripper_description)/urdf/tracebot_gripper_UR_cable_support_2.xacro"/>
+      <xacro:include filename="$(find robotiq_2f_model)/model/robotiq_2f_85.urdf.xacro" />
+    </xacro:if>
+
+
+
+    <!-- Left Arm Mount -->
+    <xacro:if value="${left_arm}">
+      <joint name="${robot_name}_left_arm_mount_joint" type="fixed">
+        <origin xyz="${left_arm_mount_tx} ${left_arm_mount_ty} ${left_arm_mount_tz}" rpy="${left_arm_mount_rr} ${left_arm_mount_rp} ${left_arm_mount_ry}"/>
+        <parent link="${robot_name}_arm_mount_base"/>
+        <child link="${robot_name}_left_arm_mount"/>
+      </joint>
+
+      <link name="${robot_name}_left_arm_mount"/>
+
+      <joint name="${robot_name}_left_arm_base_link_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="${robot_name}_left_arm_mount"/>
+        <child link="${robot_name}_left_arm_base_link"/>
+      </joint>
+
+      <xacro:ur_robot prefix="${robot_name}_left_arm_"
+                      joint_limits_parameters_file="${left_arm_joint_limits_parameters_file}"
+                      kinematics_parameters_file="${left_arm_kinematics_parameters_file}"
+                      physical_parameters_file="${left_arm_physical_parameters_file}"
+                      visual_parameters_file="${left_arm_visual_parameters_file}"
+                      transmission_hw_interface="hardware_interface/PositionJointInterface"
+                      safety_limits="false"
+                      safety_pos_margin="0.15"
+                      safety_k_position="20"/>
+
+      <xacro:if value="${robotiq_grippers or right_tracebot_gripper_left_robotiq_grippers}">
+        <xacro:robotiq_2f_85 parent="${robot_name}_left_arm_tool0"
+                             name="${robot_name}_left_gripper">
+          <origin xyz="0 0 0" rpy="0 0 1.5708" />
+        </xacro:robotiq_2f_85>
+      </xacro:if>
+      <xacro:if value="${tracebot_grippers or left_tracebot_gripper_right_robotiq_grippers}">
+        <xacro:tracebot_gripper
+                     parent="${robot_name}_left_arm_tool0"
+                     prefix="${robot_name}_left_gripper_">
+          <origin xyz="0 0 0" rpy="0 0 ${pi/4}" />
+        </xacro:tracebot_gripper>
+        <xacro:tracebot_UR_cable_support_1
+                     parent="${robot_name}_left_arm_wrist_2_link"
+                     prefix="${robot_name}_left_gripper_wrist_2_">
+          <origin xyz="0 -0.055 0" rpy="1.47079632679 0.0 0" />
+        </xacro:tracebot_UR_cable_support_1>
+        <xacro:tracebot_UR_cable_support_1
+                     parent="${robot_name}_left_arm_forearm_link"
+                     prefix="${robot_name}_left_gripper_forearm_">
+          <origin xyz="-0.572 0 -0.015" rpy="-0.1 -3.14159265359 1.57079632679" />
+        </xacro:tracebot_UR_cable_support_1>
+        <xacro:tracebot_UR_cable_support_2
+                     parent="${robot_name}_left_arm_wrist_1_link"
+                     prefix="${robot_name}_left_gripper_wrist_1_">
+          <origin xyz="0 0.055 0" rpy="-1.67 -3.14159265359 0" />
+        </xacro:tracebot_UR_cable_support_2>
+        <xacro:tracebot_driver_box
+                     parent="${robot_name}_left_arm_forearm_link"
+                     prefix="${robot_name}_left_gripper_">
+          <origin xyz="0 0 0" rpy="0 -1.57079632679  0" />
+        </xacro:tracebot_driver_box>
+      </xacro:if>
+
+      <link name="${robot_name}_left_arm_ft_sensor"/>
+
+      <joint name="${robot_name}_left_arm_ft_sensor_joint" type="fixed">
+        <origin xyz="${left_arm_ft_sensor_tx} ${left_arm_ft_sensor_ty} ${left_arm_ft_sensor_tz}" rpy="${left_arm_ft_sensor_rr} ${left_arm_ft_sensor_rp} ${left_arm_ft_sensor_ry}"/>
+        <parent link="${robot_name}_left_arm_tool0"/>
+        <child link="${robot_name}_left_arm_ft_sensor"/>
+      </joint>
+
+      <link name="${robot_name}_left_arm_tcp"/>
+
+      <joint name="${robot_name}_left_arm_tcp_joint" type="fixed">
+        <origin xyz="${left_arm_tcp_tx} ${left_arm_tcp_ty} ${left_arm_tcp_tz}" rpy="${left_arm_tcp_rr} ${left_arm_tcp_rp} ${left_arm_tcp_ry}"/>
+        <parent link="${robot_name}_left_arm_tool0"/>
+        <child link="${robot_name}_left_arm_tcp"/>
+      </joint>
+    </xacro:if>
+
+
+    <!-- Right Arm Mount -->
+    <xacro:if value="${right_arm}">
+      <joint name="${robot_name}_right_arm_mount_joint" type="fixed">
+        <origin xyz="${right_arm_mount_tx} ${right_arm_mount_ty} ${right_arm_mount_tz}" rpy="${right_arm_mount_rr} ${right_arm_mount_rp} ${right_arm_mount_ry}"/>
+        <parent link="${robot_name}_arm_mount_base"/>
+        <child link="${robot_name}_right_arm_mount"/>
+      </joint>
+
+      <link name="${robot_name}_right_arm_mount"/>
+
+      <joint name="${robot_name}_right_arm_base_link_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="${robot_name}_right_arm_mount"/>
+        <child link="${robot_name}_right_arm_base_link"/>
+      </joint>
+
+      <xacro:ur_robot prefix="${robot_name}_right_arm_"
+                      joint_limits_parameters_file="${right_arm_joint_limits_parameters_file}"
+                      kinematics_parameters_file="${right_arm_kinematics_parameters_file}"
+                      physical_parameters_file="${right_arm_physical_parameters_file}"
+                      visual_parameters_file="${right_arm_visual_parameters_file}"
+                      transmission_hw_interface="hardware_interface/PositionJointInterface"
+                      safety_limits="false"
+                      safety_pos_margin="0.15"
+                      safety_k_position="20"/>
+
+      <xacro:if value="${robotiq_grippers or left_tracebot_gripper_right_robotiq_grippers}">
+        <xacro:robotiq_2f_85 parent="${robot_name}_right_arm_tool0"
+                             name="${robot_name}_right_gripper">
+          <origin xyz="0 0 0" rpy="0 0 1.5708" />
+        </xacro:robotiq_2f_85>
+      </xacro:if>
+      <xacro:if value="${tracebot_grippers or right_tracebot_gripper_left_robotiq_grippers}">
+        <xacro:tracebot_gripper
+                     parent="${robot_name}_right_arm_tool0"
+                     prefix="${robot_name}_right_gripper_">
+	        <origin xyz="0 0 0" rpy="0 0 ${pi/4}" />
+        </xacro:tracebot_gripper>
+        <xacro:tracebot_UR_cable_support_1
+                     parent="${robot_name}_right_arm_wrist_2_link"
+                     prefix="${robot_name}_right_gripper_wrist_2_">
+          <origin xyz="0 -0.055 0" rpy="1.47079632679 0.0 0" />
+        </xacro:tracebot_UR_cable_support_1>
+        <xacro:tracebot_UR_cable_support_1
+                     parent="${robot_name}_right_arm_forearm_link"
+                     prefix="${robot_name}_right_gripper_forearm_">
+          <origin xyz="-0.572 0 -0.015" rpy="-0.1 -3.14159265359 1.57079632679" />
+        </xacro:tracebot_UR_cable_support_1>
+        <xacro:tracebot_UR_cable_support_2
+                     parent="${robot_name}_right_arm_wrist_1_link"
+                     prefix="${robot_name}_right_gripper_wrist_1_">
+          <origin xyz="0 0.055 0" rpy="-1.67 -3.14159265359 0" />
+        </xacro:tracebot_UR_cable_support_2>
+        <xacro:tracebot_driver_box
+                     parent="${robot_name}_right_arm_forearm_link"
+                     prefix="${robot_name}_right_gripper_">
+          <origin xyz="0 0 0" rpy="0 -1.57079632679  0" />
+        </xacro:tracebot_driver_box>
+      </xacro:if>
+
+      <link name="${robot_name}_right_arm_ft_sensor"/>
+
+      <joint name="${robot_name}_right_arm_ft_sensor_joint" type="fixed">
+        <origin xyz="${right_arm_ft_sensor_tx} ${right_arm_ft_sensor_ty} ${right_arm_ft_sensor_tz}" rpy="${right_arm_ft_sensor_rr} ${right_arm_ft_sensor_rp} ${right_arm_ft_sensor_ry}"/>
+        <parent link="${robot_name}_right_arm_tool0"/>
+        <child link="${robot_name}_right_arm_ft_sensor"/>
+      </joint>
+
+      <link name="${robot_name}_right_arm_tcp"/>
+
+      <joint name="${robot_name}_right_arm_tcp_joint" type="fixed">
+        <origin xyz="${right_arm_tcp_tx} ${right_arm_tcp_ty} ${right_arm_tcp_tz}" rpy="${right_arm_tcp_rr} ${right_arm_tcp_rp} ${right_arm_tcp_ry}"/>
+        <parent link="${robot_name}_right_arm_tool0"/>
+        <child link="${robot_name}_right_arm_tcp"/>
+      </joint>
+    </xacro:if>
+
+    <!-- Camera Mount -->
+    <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
+
+    <joint name="${robot_name}_camera_mount_base_joint" type="fixed">
+      <origin xyz="0 ${base_center_to_camera_slide_y} ${base_center_to_camera_slide_z+camera_mount_offset_z}" rpy="0 0 0"/>
+      <parent link="${robot_name}_arm_mount_base"/>
+      <child link="${robot_name}_camera_mount_base"/>
+    </joint>
+
+    <link name="${robot_name}_camera_mount_base">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 ${-pi/2}"/>
+        <geometry>
+          <mesh filename="package://tracebot_description/meshes/robot/camera_bracket_base.dae" />
+        </geometry>
+      </visual>
+    </link>
+
+    <joint name="${robot_name}_camera_mount_pivot_joint" type="fixed">
+      <origin xyz="0 ${camera_base_center_to_joint} 0" rpy="${camera_tilt} 0 0"/>
+      <parent link="${robot_name}_camera_mount_base"/>
+      <child link="${robot_name}_camera_mount_pivot"/>
+    </joint>
+
+    <link name="${robot_name}_camera_mount_pivot">
+      <visual>
+      <origin xyz="0 ${camera_pivot_center_to_joint} 0" rpy="0 0 ${-pi/2}"/>
+        <geometry>
+          <mesh filename="package://tracebot_description/meshes/robot/camera_bracket_pivot.dae" />
+        </geometry>
+      </visual>
+    </link>
+
+    <joint name="${robot_name}_camera_mount_joint" type="fixed">
+      <origin xyz="0 ${camera_screw_to_back_place_y+camera_pivot_center_to_joint} ${-camera_screw_to_back_place_z}" rpy="0 0 0"/>
+      <parent link="${robot_name}_camera_mount_pivot"/>
+      <child link="${robot_name}_camera_mount"/>
+    </joint>
+
+    <link name="${robot_name}_camera_mount"/>
+
+    <xacro:sensor_d435 parent="${robot_name}_camera_mount"
+                       use_nominal_extrinsics="true"
+                       add_plug="false"
+                       use_mesh="true"
+                       name="${robot_name}_camera">
+      <origin xyz="0 0 0" rpy="0 0 ${pi/2}"/>
+    </xacro:sensor_d435>
+
+    <!--Fixed Environment-->
+    <xacro:if value="${load_scene}">
+      <joint name="${robot_name}_table_joint" type="fixed">
+        <origin xyz="0 ${base_table_offset_y} ${table_height/2 + base_table_offset_z}" rpy="0 0 0"/>
+        <parent link="${robot_name}_base_link"/>
+        <child link="${robot_name}_table"/>
+      </joint>
+
+      <link name="${robot_name}_table">
+        <visual>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://tracebot_description/meshes/robot/table.dae" />
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 ${(table_surface_height)-0.025}" rpy="0 0 0"/>
+          <geometry>
+            <box size="${table_width} ${table_depth} 0.05" />
+          </geometry>
+        </collision>
+      </link>
+    </xacro:if>
+
+    <xacro:if value="${load_scene == False and load_estimated_scene == True}">
+      <joint name="${robot_name}_table_joint" type="fixed">
+        <origin xyz="${estimated_table_tx} ${estimated_table_ty} ${estimated_table_tz}" rpy="${estimated_table_rr} ${estimated_table_rp} ${estimated_table_ry}"/>
+        <parent link="${robot_name}_camera_color_optical_frame"/>
+        <child link="${robot_name}_table"/>
+      </joint>
+
+      <link name="${robot_name}_table">
+        <visual>
+          <origin xyz="0 0 ${-table_height/2}" rpy="0 0 0"/>
+          <geometry>
+            <box size="${table_width} ${table_depth} ${table_height}"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 ${-table_height/2}" rpy="0 0 0"/>
+          <geometry>
+            <box size="${table_width} ${table_depth} ${table_height}"/>
+          </geometry>
+        </collision>
+      </link>
+    </xacro:if>
+
+    <xacro:if value="${pump_enable}">
+      <xacro:if value="${pump_mockup_enable}">
+        <xacro:pump_mockup robot_name="${robot_name}_pump_mockup"/>
+
+        <joint name="${robot_name}_table_to_pump_joint" type="fixed">
+          <origin xyz="${pump_pos_x} ${pump_pos_y} ${pump_pos_z}" rpy="${pump_rot_r} ${pump_rot_p} ${pump_rot_y}"/>
+          <parent link="${robot_name}_table"/>
+          <child link="${robot_name}_pump_mockup"/>
+        </joint>
+      </xacro:if>
+
+      <xacro:unless value="${pump_mockup_enable}">
+        <joint name="${robot_name}_table_to_pump_joint" type="fixed">
+          <origin xyz="${pump_pos_x} ${pump_pos_y} ${pump_pos_z}" rpy="${pump_rot_r} ${pump_rot_p} ${pump_rot_y}"/>
+          <parent link="${robot_name}_table"/>
+          <child link="${robot_name}_pump"/>
+        </joint>
+
+        <xacro:pump
+          robot_name="${robot_name}"
+          holder_enabled="${pump_show_holder}"/>
+      </xacro:unless>
+    </xacro:if>
+  </xacro:macro>
+</robot>

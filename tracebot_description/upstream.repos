@@ -1,0 +1,16 @@
+repositories:
+  tracebot_gripper_description:
+    type: git
+    url: git@gitlab.com:tracebot/cea/tracebot_gripper_description.git
+    version: master
+
+  universal_robot:
+    type: git
+    url: https://github.com/ros-industrial/universal_robot.git
+    version: melodic-devel-staging
+
+  robotiq:
+    type: git
+    url: https://github.com/beta-robots/robotiq.git
+    version: master
+

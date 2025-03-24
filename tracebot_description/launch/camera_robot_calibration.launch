@@ -1,0 +1,9 @@
+<launch>
+  <arg name="robot_setup" default="astech"/>
+
+  <arg name="cam_T_robots_filename" value="$(find tracebot_description)/config/$(arg robot_setup)/camera_robot_calibration.yaml"/>
+
+  <node name="camera_robot_calibration" type="camera_robot_calibration" pkg="tracebot_description" output="screen">
+    <param name="cam_T_robots_filename" value="$(arg cam_T_robots_filename)"/>
+  </node>
+</launch>

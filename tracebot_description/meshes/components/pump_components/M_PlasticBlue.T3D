@@ -1,0 +1,21 @@
+Begin Object Class=/Script/Engine.Material Name="M_PlasticBlue"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=0.086463,G=0.071089,B=0.800000,A=0.000000)
+      ExpressionGUID=3F0057384594040B6DE319BA3F93F1C5
+      MaterialExpressionGuid=2C0662324D588D657C922FA4DF4D498D
+      Material=Material'"M_PlasticBlue"'
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=F5ACC77647AD641CFCDB278684BB409E
+   CachedExpressionData=(Parameters=(Entries[1]=(NameHashes=(10371715421228879687),ParameterInfos=((Name="Param")),ExpressionGuids=(3F0057384594040B6DE319BA3F93F1C5),Overrides=(False)),VectorValues=((R=0.086463,G=0.071089,B=0.800000,A=0.000000)),VectorChannelNameValues=(()),VectorUsedAsChannelMaskValues=(False)),QualityLevelsUsed=(False,True,False))
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=C84E2B2444DD7364BEDFEBBB3FC0A31C
+End Object

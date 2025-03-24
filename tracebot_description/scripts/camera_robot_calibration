@@ -1,0 +1,163 @@
+#!/usr/bin/env python
+
+import rospy
+import numpy as np
+import tf
+from urdf_parser_py.urdf import URDF
+import yaml
+
+
+def create_homogeneous_matrix_xyzrpy(xyz, rpy):
+    translation = xyz
+    rotation = tf.transformations.euler_matrix(
+        rpy[2], rpy[1], rpy[0], 'rzyx')[0:3, 0:3]
+    h_matrix = np.identity(4)
+    h_matrix[:3, :3] = rotation
+    h_matrix[:3, 3] = translation
+    return h_matrix
+
+
+def get_tree_to_root(robot, name):
+    child_link = name
+    found = False
+    finish = False
+    names = []
+    root_link = robot.joints[0].parent
+    while not finish:
+        for joint in robot.joints:
+            if joint.child == child_link:
+                found = True
+                child_link = joint.parent
+                names.append(joint.child)
+            if child_link == root_link:
+                names.append(root_link)
+                finish = True
+                break
+        if not found:
+            rospy.logerr("Make sure defined links exits and order is correct")
+            break
+    return names
+
+
+def find_common_parent_frame(robot, a_name, b_name):
+    a_names = get_tree_to_root(robot, a_name)
+    b_names = get_tree_to_root(robot, b_name)
+    found = False
+    for i in range(len(a_names)):
+        if found:
+            break
+        for j in range(len(b_names)):
+            if a_names[i] == b_names[j]:
+                # reduce list to the common ancestor
+                a_names = a_names[:-(len(a_names)-i-1)]
+                b_names = b_names[:-(len(b_names)-j-1)]
+                found = True
+                break
+    return a_names, b_names
+
+
+def get_transforms_tree(robot, names):
+    tree = []
+    name_0, name_1 = find_common_parent_frame(robot, names[0], names[1])
+    tree = name_0
+    if len(name_1) >= 1:
+        name_1 = name_1[:-1]
+    for name in reversed(name_1):
+        if name in name_0:
+            break
+        tree.append(name)
+    return tree
+
+
+def get_transform(robot, root_link, des_link):
+    names = get_transforms_tree(robot, [root_link, des_link])
+
+    finish = False
+    found = False
+    des_frame = names[-1]
+    cur_frame = names[0]
+    ctr = 1
+    transform = np.identity(4)
+    while not finish:
+        found = False
+        for joint in robot.joints:
+            if (joint.child == names[ctr]) and (joint.parent == names[ctr - 1]):
+                found = True
+                trans = create_homogeneous_matrix_xyzrpy(
+                    joint.origin.xyz, joint.origin.rpy)
+                transform = np.matmul(transform, trans)
+                if not (ctr >= len(names)):
+                    cur_frame = joint.child
+                    ctr = ctr + 1
+                break
+
+            if (joint.child == names[ctr - 1]) and (joint.parent == names[ctr]):
+                found = True
+                trans = create_homogeneous_matrix_xyzrpy(
+                    joint.origin.xyz, joint.origin.rpy)
+                transform = np.matmul(transform, np.linalg.inv(trans))
+                if not (ctr >= len(names)):
+                    cur_frame = joint.parent
+                    ctr = ctr + 1
+                break
+
+        if cur_frame == des_frame:
+            finish = True
+            break
+        if not found:
+            rospy.logerr("Make sure defined links exits and order is correct")
+            break
+    return transform
+
+
+if __name__ == '__main__':
+
+    rospy.init_node('camera_robot_calibration')
+
+    if not rospy.has_param("robot_description"):
+        rospy.logerr("Could not read `robot_description` parameter")
+        exit()
+    if not rospy.has_param("~cam_T_robots_filename"):
+        rospy.logerr("Could not read `cam_T_robots_filename` parameter")
+        exit()
+
+    robot_description = rospy.get_param("robot_description")
+    cam_T_robots_filename = rospy.get_param("~cam_T_robots_filename")
+
+    robot = URDF.from_xml_string(robot_description)
+
+    with open(cam_T_robots_filename, "r") as stream:
+        try:
+            configs = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            rospy.logerr(exc)
+
+    for config in configs:
+        side = config["side"]
+        xyz = [config["transform"]["x"], config["transform"]
+               ["y"], config["transform"]["z"]]
+        rpy = [config["transform"]["roll"], config["transform"]
+               ["pitch"], config["transform"]["yaw"]]
+        robot_base_link_T_cam = create_homogeneous_matrix_xyzrpy(xyz, rpy)
+
+        # robot_base_link_T_cam = cam_T_arm_mount_base * arm_mount_base_T_arm_mount * arm_mount_T_robot_base_link
+        # arm_mount_base_T_arm_mount = inv(cam_T_arm_mount_base) * inv(robot_base_link_T_cam) * inv(arm_mount_T_robot_base_link)
+        cam_T_arm_mount_base = get_transform(
+            robot, config["camera_frame"], config["arm_mount_base_frame"])
+        arm_mount_T_robot_base_link = get_transform(
+            robot, config["arm_mount_frame"], config["arm_base_link"])
+        arm_mount_base_T_arm_mount = np.matmul(np.linalg.inv(cam_T_arm_mount_base), np.matmul(
+            np.linalg.inv(robot_base_link_T_cam), np.linalg.inv(arm_mount_T_robot_base_link)))
+
+        xyz = arm_mount_base_T_arm_mount[0:3, 3]
+        rpy = tf.transformations.euler_from_matrix(
+            arm_mount_base_T_arm_mount[0:3, 0:3], "rzyx")
+
+        rospy.loginfo("Copy the below text for the " + side + " robot into the config/config.yaml file")
+        print("\t" + side + "_arm_mount:")
+        print("\t\tx: " + str(xyz[0]))
+        print("\t\ty: " + str(xyz[1]))
+        print("\t\tz: " + str(xyz[2]))
+        print("\t\troll: " + str(rpy[2]))
+        print("\t\tpitch: " + str(rpy[1]))
+        print("\t\tyaw: " + str(rpy[0]))

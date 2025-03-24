@@ -1,0 +1,22 @@
+Begin Object Class=/Script/Engine.Material Name="M_SteelSatin"
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=1.000000,G=1.000000,B=1.000000,A=0.000000)
+      ExpressionGUID=F5A8AAD548A35ABE2A95C89264539A26
+      MaterialExpressionGuid=C98D71F64B4C10C562497C9D9494E6FC
+      Material=Material'"M_SteelSatin"'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   bUsedWithStaticLighting=True
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=1880CE16B12C4745BB80A9D8189D0765
+   CachedExpressionData=(Parameters=(Entries[1]=(NameHashes=(10371715421228879687),ParameterInfos=((Name="Param")),ExpressionGuids=(F5A8AAD548A35ABE2A95C89264539A26),Overrides=(False)),VectorValues=((R=1.000000,G=1.000000,B=1.000000,A=0.000000)),VectorChannelNameValues=(()),VectorUsedAsChannelMaskValues=(False)),QualityLevelsUsed=(False,True,False))
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=4243633D437D96BE99964E839BA9B0B1
+End Object

@@ -1,0 +1,101 @@
+robot_name: tracebot
+
+positions:
+  camera:
+    tilt: -1.103
+    z: 0.574
+
+  left_arm_mount:
+    x: -0.15340233873248849
+    y: 0.1456366200657619
+    z: 1.2133401488407962
+    roll: 1.0593149723408593
+    pitch: -0.0077409826770924025
+    yaw: -1.5625599113329702
+
+  left_arm_ft_sensor:
+    x: 0
+    y: 0
+    z: 0
+    roll: 0
+    pitch: 0
+    yaw: 0
+
+  left_arm_tcp:
+    x: 0
+    y: -0.03
+    z: 0.33
+    roll: 0
+    pitch: 0
+    yaw: 0
+
+  right_arm_mount:
+    x: 0.15520758087262845
+    y: 0.15270405355376
+    z: 1.2033157099231238
+    roll: 1.0633953554908548
+    pitch: -0.001414985116229878
+    yaw: 1.5660520291285245
+
+  right_arm_ft_sensor:
+    x: 0
+    y: 0
+    z: 0
+    roll: 0
+    pitch: 0
+    yaw: 0
+
+  right_arm_tcp:
+    x: 0
+    y: -0.03
+    z: 0.33
+    roll: 0
+    pitch: 0
+    yaw: 0
+
+  # These values are meaningless unless 'load_estimated_scene' is set to true below
+  # However they must be present for the XACRO macro to correctly instantiate
+  estimated_table:
+    x: 0
+    y: 0
+    z: 0
+    roll: 0
+    pitch: 0
+    yaw: 0
+
+parameters:
+  left_arm:
+    joint_limits_parameters_file: "$(find ur_description)/config/ur10e/joint_limits.yaml"
+    kinematics_parameters_file: "$(find tracebot_description)/config/astech/ur_calibration/ur10e_left.yaml"
+    physical_parameters_file: "$(find ur_description)/config/ur10e/physical_parameters.yaml"
+    visual_parameters_file: "$(find ur_description)/config/ur10e/visual_parameters.yaml"
+
+  right_arm:
+    joint_limits_parameters_file: "$(find ur_description)/config/ur10e/joint_limits.yaml"
+    kinematics_parameters_file: "$(find tracebot_description)/config/astech/ur_calibration/ur10e_right.yaml"
+    physical_parameters_file: "$(find ur_description)/config/ur10e/physical_parameters.yaml"
+    visual_parameters_file: "$(find ur_description)/config/ur10e/visual_parameters.yaml"
+
+visualisation:
+  left_arm_enabled: true
+  right_arm_enabled: true
+  robotiq_grippers_enabled: false
+  tracebot_grippers: true
+  left_tracebot_gripper_right_robotiq_grippers: false
+  right_tracebot_gripper_left_robotiq_grippers: false
+  show_base_model: true
+  load_scene: true
+  load_estimated_scene: false
+  table_width: 1.50001
+  table_depth: 1.59771
+  table_height: 1.08216
+  pump:
+    enabled: true
+    show_pump_holder: false
+    mockup: false
+    px: 0
+    py: 0
+    pz: 0.788872
+    rr: 0
+    rp: 0
+    ry: 0

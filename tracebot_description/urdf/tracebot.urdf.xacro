@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="tracebot">
+  <xacro:include filename="$(find tracebot_description)/urdf/tracebot_macro.urdf.xacro"/>
+
+  <xacro:arg name="params_path" default="$(find tracebot_description)/config/astech/config.yaml"/>
+  <xacro:property name="params_path" value="$(arg params_path)"/>
+  <xacro:property name="mp" value="${xacro.load_yaml(params_path)}"/>
+
+  <!-- load file names with substitution arguments -->
+  <xacro:arg name="left_arm_joint_limits_parameters_file" default="${mp['parameters']['left_arm']['joint_limits_parameters_file']}"/>
+  <xacro:arg name="left_arm_kinematics_parameters_file" default="${mp['parameters']['left_arm']['kinematics_parameters_file']}"/>
+  <xacro:arg name="left_arm_physical_parameters_file" default="${mp['parameters']['left_arm']['physical_parameters_file']}"/>
+  <xacro:arg name="left_arm_visual_parameters_file" default="${mp['parameters']['left_arm']['visual_parameters_file']}"/>
+
+  <xacro:arg name="right_arm_joint_limits_parameters_file" default="${mp['parameters']['right_arm']['joint_limits_parameters_file']}"/>
+  <xacro:arg name="right_arm_kinematics_parameters_file" default="${mp['parameters']['right_arm']['kinematics_parameters_file']}"/>
+  <xacro:arg name="right_arm_physical_parameters_file" default="${mp['parameters']['right_arm']['physical_parameters_file']}"/>
+  <xacro:arg name="right_arm_visual_parameters_file" default="${mp['parameters']['right_arm']['visual_parameters_file']}"/>
+
+  <!--Add parameters to robot base-->
+  <xacro:tracebot
+    robot_name="${mp['robot_name']}"
+
+    camera_tilt="${mp['positions']['camera']['tilt']}"
+    camera_mount_offset_z="${mp['positions']['camera']['z']}"
+
+    pump_enable="${mp['visualisation']['pump']['enabled']}"
+    pump_mockup_enable="${mp['visualisation']['pump']['mockup']}"
+    pump_show_holder="${mp['visualisation']['pump']['show_pump_holder']}"
+    pump_pos_x="${mp['visualisation']['pump']['px']}"
+    pump_pos_y="${mp['visualisation']['pump']['py']}"
+    pump_pos_z="${mp['visualisation']['pump']['pz']}"
+    pump_rot_r="${mp['visualisation']['pump']['rr']}"
+    pump_rot_p="${mp['visualisation']['pump']['rp']}"
+    pump_rot_y="${mp['visualisation']['pump']['ry']}"
+
+    left_arm="${mp['visualisation']['left_arm_enabled']}"
+    right_arm="${mp['visualisation']['right_arm_enabled']}"
+    robotiq_grippers="${mp['visualisation']['robotiq_grippers_enabled']}"
+    tracebot_grippers="${mp['visualisation']['tracebot_grippers']}"
+    left_tracebot_gripper_right_robotiq_grippers="${mp['visualisation']['left_tracebot_gripper_right_robotiq_grippers']}"
+    right_tracebot_gripper_left_robotiq_grippers="${mp['visualisation']['right_tracebot_gripper_left_robotiq_grippers']}"
+
+    load_scene="${mp['visualisation']['load_scene']}"
+    load_estimated_scene="${mp['visualisation']['load_estimated_scene']}"
+
+    estimated_table_tx="${mp['positions']['estimated_table']['x']}"
+    estimated_table_ty="${mp['positions']['estimated_table']['y']}"
+    estimated_table_tz="${mp['positions']['estimated_table']['z']}"
+    estimated_table_rr="${mp['positions']['estimated_table']['roll']}"
+    estimated_table_rp="${mp['positions']['estimated_table']['pitch']}"
+    estimated_table_ry="${mp['positions']['estimated_table']['yaw']}"
+
+    table_width="${mp['visualisation']['table_width']}"
+    table_depth="${mp['visualisation']['table_depth']}"
+    table_height="${mp['visualisation']['table_height']}"
+
+    show_model="${mp['visualisation']['show_base_model']}"
+
+    left_arm_mount_tx="${mp['positions']['left_arm_mount']['x']}"
+    left_arm_mount_ty="${mp['positions']['left_arm_mount']['y']}"
+    left_arm_mount_tz="${mp['positions']['left_arm_mount']['z']}"
+    left_arm_mount_rr="${mp['positions']['left_arm_mount']['roll']}"
+    left_arm_mount_rp="${mp['positions']['left_arm_mount']['pitch']}"
+    left_arm_mount_ry="${mp['positions']['left_arm_mount']['yaw']}"
+
+    left_arm_ft_sensor_tx="${mp['positions']['left_arm_ft_sensor']['x']}"
+    left_arm_ft_sensor_ty="${mp['positions']['left_arm_ft_sensor']['y']}"
+    left_arm_ft_sensor_tz="${mp['positions']['left_arm_ft_sensor']['z']}"
+    left_arm_ft_sensor_rr="${mp['positions']['left_arm_ft_sensor']['roll']}"
+    left_arm_ft_sensor_rp="${mp['positions']['left_arm_ft_sensor']['pitch']}"
+    left_arm_ft_sensor_ry="${mp['positions']['left_arm_ft_sensor']['yaw']}"
+
+    left_arm_tcp_tx="${mp['positions']['left_arm_tcp']['x']}"
+    left_arm_tcp_ty="${mp['positions']['left_arm_tcp']['y']}"
+    left_arm_tcp_tz="${mp['positions']['left_arm_tcp']['z']}"
+    left_arm_tcp_rr="${mp['positions']['left_arm_tcp']['roll']}"
+    left_arm_tcp_rp="${mp['positions']['left_arm_tcp']['pitch']}"
+    left_arm_tcp_ry="${mp['positions']['left_arm_tcp']['yaw']}"
+
+    left_arm_joint_limits_parameters_file="$(arg left_arm_joint_limits_parameters_file)"
+    left_arm_kinematics_parameters_file="$(arg left_arm_kinematics_parameters_file)"
+    left_arm_physical_parameters_file="$(arg left_arm_physical_parameters_file)"
+    left_arm_visual_parameters_file="$(arg left_arm_visual_parameters_file)"
+
+    right_arm_mount_tx="${mp['positions']['right_arm_mount']['x']}"
+    right_arm_mount_ty="${mp['positions']['right_arm_mount']['y']}"
+    right_arm_mount_tz="${mp['positions']['right_arm_mount']['z']}"
+    right_arm_mount_rr="${mp['positions']['right_arm_mount']['roll']}"
+    right_arm_mount_rp="${mp['positions']['right_arm_mount']['pitch']}"
+    right_arm_mount_ry="${mp['positions']['right_arm_mount']['yaw']}"
+
+    right_arm_ft_sensor_tx="${mp['positions']['right_arm_ft_sensor']['x']}"
+    right_arm_ft_sensor_ty="${mp['positions']['right_arm_ft_sensor']['y']}"
+    right_arm_ft_sensor_tz="${mp['positions']['right_arm_ft_sensor']['z']}"
+    right_arm_ft_sensor_rr="${mp['positions']['right_arm_ft_sensor']['roll']}"
+    right_arm_ft_sensor_rp="${mp['positions']['right_arm_ft_sensor']['pitch']}"
+    right_arm_ft_sensor_ry="${mp['positions']['right_arm_ft_sensor']['yaw']}"
+
+    right_arm_tcp_tx="${mp['positions']['right_arm_tcp']['x']}"
+    right_arm_tcp_ty="${mp['positions']['right_arm_tcp']['y']}"
+    right_arm_tcp_tz="${mp['positions']['right_arm_tcp']['z']}"
+    right_arm_tcp_rr="${mp['positions']['right_arm_tcp']['roll']}"
+    right_arm_tcp_rp="${mp['positions']['right_arm_tcp']['pitch']}"
+    right_arm_tcp_ry="${mp['positions']['right_arm_tcp']['yaw']}"
+
+    right_arm_joint_limits_parameters_file="$(arg right_arm_joint_limits_parameters_file)"
+    right_arm_kinematics_parameters_file="$(arg right_arm_kinematics_parameters_file)"
+    right_arm_physical_parameters_file="$(arg right_arm_physical_parameters_file)"
+    right_arm_visual_parameters_file="$(arg right_arm_visual_parameters_file)"
+  />
+</robot>
