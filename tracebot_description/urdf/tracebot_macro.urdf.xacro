@@ -326,10 +326,61 @@
         <child link="${robot_name}_right_arm_tcp"/>
       </joint>
     </xacro:if>
-
+    
+    
+     <!-- Canister Mount -->
+    
+    
     <!-- Camera Mount -->
     <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
+    
+      <joint name="myCanister_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="tracebot_base_link"/>
+      <child link="dt/http://www.semanticweb.org/smile/ontologies/2022/2/TraceBot#Canister_KEGZRSUF"/>
+    </joint>
 
+    <link name="dt/http://www.semanticweb.org/smile/ontologies/2022/2/TraceBot#Canister_KEGZRSUF">
+      <visual>
+        <origin xyz="0 0 -0.01" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://tracebot_description/meshes/components/canister.stl" />
+        </geometry>
+      </visual>
+    </link>
+    
+    
+    
+    <joint name="myNeedle_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="tracebot_base_link"/>
+      <child link="dt/http://www.semanticweb.org/smile/ontologies/2022/2/TraceBot#Needle_FXENJSKB"/>
+    </joint>
+
+    <link name="dt/http://www.semanticweb.org/smile/ontologies/2022/2/TraceBot#Needle_FXENJSKB">
+      <visual>
+        <origin xyz="0 0 -0.01" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://tracebot_description/meshes/components/Needle.stl" />
+        </geometry>
+      </visual>
+    </link>
+    
+    <joint name="myBottle_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="tracebot_base_link"/>
+      <child link="dt/http://www.semanticweb.org/smile/ontologies/2022/2/TraceBot#RinseBottleA_CPKSWOFI"/>
+    </joint>
+
+    <link name="dt/http://www.semanticweb.org/smile/ontologies/2022/2/TraceBot#RinseBottleA_CPKSWOFI">
+      <visual>
+        <origin xyz="0 0 -0.01" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://tracebot_description/meshes/components/LargeRinseFluidA_Bottle.stl" />
+        </geometry>
+      </visual>
+    </link>
+    
     <joint name="${robot_name}_camera_mount_base_joint" type="fixed">
       <origin xyz="0 ${base_center_to_camera_slide_y} ${base_center_to_camera_slide_z+camera_mount_offset_z}" rpy="0 0 0"/>
       <parent link="${robot_name}_arm_mount_base"/>
